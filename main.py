@@ -25,19 +25,16 @@ def deseja_depositar():
         valor_depositado = 0
     return valor_depositado
 
-
 def exibe_menu_inicial():
     print("(1) Criar conta (2) Acessar conta (3) Informações (4) Sair")
-
 
 def logo_inicial():
     print("**************************")
     print("Bem vindo ao Banco NUCLEO!")
     print("**************************")
 
-
 def criar_conta():
-    nome = input("Digite seu nome: ")
+    nome = input("Digite seu nome: ").strip().upper()
     numero = len(SeedConta) + 1
     valor_depositado = deseja_depositar()
     conta = Conta(numero, nome, valor_depositado, 1000)
@@ -48,11 +45,9 @@ def criar_conta():
     input("Aperte qualquer tecla para continuar...")
     main()
 
-
 def exibir_usuario_saldo(usuario_conectado):
     print("{}".format(usuario_conectado.get_titular()))
     print("Saldo: {}".format(usuario_conectado.get_saldo()))
-
 
 def exibe_menu_da_conta(usuario_conectado):
     print("\n" * 100)
@@ -103,7 +98,6 @@ def exibe_menu_da_conta(usuario_conectado):
     else:
         input("Digite um valor válido!")
 
-
 def main():
     print("\n" * 100)
     logo_inicial()
@@ -116,9 +110,13 @@ def main():
 
     elif menu_escolha == 2:
 
+        #conecta o usuario
+
         usuario_selecionado = int(input(contas_abertas())) - 1
         usuario_conectado = SeedConta[usuario_selecionado]
-        """usuario_conectado = usuario_conectando(usuario_selecionado)"""
+
+        #exibe layout interno
+
         exibir_usuario_saldo(usuario_conectado)
         exibe_menu_da_conta(usuario_conectado)
 
@@ -127,13 +125,12 @@ def main():
         main()
 
     elif menu_escolha == 4:
-
+        print("Até Mais..")
         quit()
 
     else:
 
         input("Digite um valor válido!")
-
 
 
 if __name__ == "__main__":
