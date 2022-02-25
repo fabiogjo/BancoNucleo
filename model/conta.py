@@ -36,7 +36,7 @@ class Conta:
     def tranferencia(self, valor, destino):
         if valor <= (self.__saldo + self.__limite):
             self.__saldo -= valor
-            destino.__saldo -= valor
+            destino.__saldo += valor
             print("Transferencia de R$ {} para conta {}, Titular: {}, efetuada com sucesso!".format(valor, destino.__numero_da_conta, destino.__titular))
         else:
             print("Você nao tem saldo suficiente!")
