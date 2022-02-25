@@ -1,16 +1,51 @@
 from model.conta import Conta
+from openpyxl import load_workbook
 
-seed = [
+def carrega_banco_de_dados():
+    workbook = load_workbook('contas.xlsx')
 
-    Conta(1, "Fabio", 100, 1000),
+    # seleciona pagina da planilha
+    ws1 = workbook.active
 
-    Conta(2, "Biel", 100, 1000)
+    seed = []
+    for numero_da_conta, titular, saldo, cheque_especial, limite in ws1.iter_rows(min_row=1, max_col=5, values_only=True):
+        seed.append(Conta(numero_da_conta, titular, saldo, cheque_especial, limite))
+    return seed
 
 
 
-]
+
+seed = carrega_banco_de_dados()
+
+
+def atualiza_banco_de_dados(numero_da_conta, saldo, cheque_especial, limite):
+    workbook = load_workbook('contas.xlsx')
+
+    # seleciona pagina da planilha
+    ws1 = workbook.active
+
+    ws1.cell(row=numero_da_conta, column=3, value=saldo)
+
+    ws1.cell(row=numero_da_conta, column=4, value=cheque_especial)
+
+    ws1.cell(row=numero_da_conta, column=5, value=limite)
+
+    workbook.save('contas.xlsx')
+
+    workbook.close()
+
+
+
+
+    #Conta(1, "Fabio", 100, 1000),
+
+    #Conta(2, "Biel", 100, 1000)
+
+
 def contas_abertas():
     contas_abertas = ''
     for indice, conta in enumerate(seed):
         contas_abertas += "({}) {} \n".format(indice + 1, conta.get_titular())
     return contas_abertas
+
+
