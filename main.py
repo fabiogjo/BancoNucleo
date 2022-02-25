@@ -41,7 +41,7 @@ def criar_conta():
     numero = len(SeedConta) + 1
     valor_depositado = deseja_depositar()
     conta = Conta(numero, nome, valor_depositado, 1000)
-    SeedConta.append(nome)
+    SeedConta.append(conta)
     print("\n" * 100)
     print("Conta {} criada. \nTitular: {} - Saldo: R$ {} - Limite liberado: R$ {}".format(conta.get_numero_da_conta(), conta.get_titular(), conta.get_saldo(), conta.get_limite()))
     mostra_cartao(conta)
