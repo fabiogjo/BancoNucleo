@@ -3,6 +3,19 @@ import time
 from seed.conta import seed as SeedConta, contas_abertas
 
 
+
+def mostra_cartao(conta):
+    print(" --------------------------------------- ")
+    print("|	     CARTAO BANCO NUCLEO		    |")
+    print("|					                    |")
+    print("| Titular: {}".format(conta.get_titular()))
+    print("|					                    |")
+    print("| Numero da conta: {}".format(conta.get_numero_da_conta()))
+    print("|					                    |")
+    print("|					                    |")
+    print("|					                    |")
+    print(" ---------------------------------------")
+
 def deseja_depositar():
     print("Deseja fazer um deposito inicial?")
     deseja_depositar = int(input("(1) Sim (2) Não"))
@@ -31,6 +44,7 @@ def criar_conta():
     SeedConta.append(nome)
     print("\n" * 100)
     print("Conta {} criada. \nTitular: {} - Saldo: R$ {} - Limite liberado: R$ {}".format(conta.get_numero_da_conta(), conta.get_titular(), conta.get_saldo(), conta.get_limite()))
+    mostra_cartao(conta)
     input("Aperte qualquer tecla para continuar...")
     main()
 
