@@ -1,10 +1,12 @@
+import time
+
 from model.conta import Conta
 import random
 from seed.conta import seed as SeedConta, contas_abertas, atualiza_banco_de_dados
 from openpyxl import load_workbook
 
 
-def criar_banco_de_dados(numero_da_conta, titular, saldo, cheque_especial_disponivel, max_cheque_especial):
+def criar_banco_de_dados(numero_da_conta, titular, saldo, cheque_especial_disponivel, max_cheque_especial, senha):
     #carrega planilha
     workbook = load_workbook('contas.xlsx')
 
@@ -12,7 +14,7 @@ def criar_banco_de_dados(numero_da_conta, titular, saldo, cheque_especial_dispon
     ws1 = workbook.active
 
     #pega dados para salvar
-    salvar_conta = [numero_da_conta, titular, saldo, cheque_especial_disponivel, max_cheque_especial]
+    salvar_conta = [numero_da_conta, titular, saldo, cheque_especial_disponivel, max_cheque_especial, senha]
 
     #adiciona dados na planilha
     ws1.append(salvar_conta)
@@ -58,14 +60,44 @@ def criar_conta():
     valor_depositado = deseja_depositar()
     max_cheque_especial = valor_depositado + random.randrange(0, 300)
     cheque_especial_disponivel = max_cheque_especial
-    conta = Conta(numero, nome, valor_depositado, cheque_especial_disponivel, max_cheque_especial)
+    senha = input("Digite uma senha: ")
+
+    conta = Conta(numero, nome, valor_depositado, cheque_especial_disponivel, max_cheque_especial, senha)
     SeedConta.append(conta)
-    criar_banco_de_dados(numero, nome, valor_depositado, cheque_especial_disponivel, max_cheque_especial)
+    criar_banco_de_dados(numero, nome, valor_depositado, cheque_especial_disponivel, max_cheque_especial, senha)
     print("\n" * 100)
     print("Conta {} criada. \nTitular: {} - Saldo: R$ {} - Cheque especial liberado: R$ {}".format(conta.get_numero_da_conta(), conta.get_titular(), conta.get_saldo(), conta.get_max_cheque_especial()))
     mostra_cartao(conta)
     input("Aperte qualquer tecla para continuar...")
     main()
+
+def acessar_conta():
+
+    workbook = load_workbook('contas.xlsx')
+
+    ws1 = workbook.active
+
+    numero = int(input("Numero da conta: "))
+    print(ws1['B{}'.format(numero)].value)
+    senha = input("senha: ")
+
+    if senha == ws1['F{}'.format(numero)].value:
+        print("Senha correta!")
+        print("Acessando...!")
+        time.sleep(1)
+        print("Acessando..")
+        time.sleep(1)
+    else:
+        print("Numero da conta ou senha incorretos!")
+        acessar_conta()
+
+    workbook.save()
+    workbook.close()
+
+    usuario_conectado = SeedConta[numero - 1]
+
+    exibir_usuario_saldo(usuario_conectado)
+    exibe_menu_da_conta(usuario_conectado)
 
 def exibir_usuario_saldo(usuario_conectado):
     print("Bem vindo, {}".format(usuario_conectado.get_titular()))
@@ -142,15 +174,7 @@ def main():
 
     elif menu_escolha == 2:
 
-        #conecta o usuario
-
-        usuario_selecionado = int(input(contas_abertas())) - 1
-        usuario_conectado = SeedConta[usuario_selecionado]
-
-        #exibe layout interno
-
-        exibir_usuario_saldo(usuario_conectado)
-        exibe_menu_da_conta(usuario_conectado)
+        acessar_conta()
 
     elif menu_escolha == 3:
 
@@ -163,7 +187,6 @@ def main():
     else:
 
         input("Digite um valor válido!")
-
 
 if __name__ == "__main__":
     loop = 0

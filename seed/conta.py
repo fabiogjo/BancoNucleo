@@ -8,8 +8,8 @@ def carrega_banco_de_dados():
     ws1 = workbook.active
 
     seed = []
-    for numero_da_conta, titular, saldo, cheque_especial, max_cheque_especial in ws1.iter_rows(min_row=1, max_col=5, values_only=True):
-        seed.append(Conta(numero_da_conta, titular, saldo, cheque_especial, max_cheque_especial))
+    for numero_da_conta, titular, saldo, cheque_especial, max_cheque_especial, senha in ws1.iter_rows(min_row=1, max_col=6, values_only=True):
+        seed.append(Conta(numero_da_conta, titular, saldo, cheque_especial, max_cheque_especial, senha))
     return seed
 
 

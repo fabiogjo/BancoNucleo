@@ -3,12 +3,13 @@ import time
 
 class Conta:
 
-    def __init__(self, numero_da_conta, titular, saldo, cheque_especial_disponivel, max_cheque_especial):
+    def __init__(self, numero_da_conta, titular, saldo, cheque_especial_disponivel, max_cheque_especial, senha):
         self.__numero_da_conta = numero_da_conta
         self.__titular = titular
         self.__saldo = saldo
         self.__cheque_especial_disponivel = cheque_especial_disponivel
         self.__max_cheque_especial = max_cheque_especial
+        self.__senha = senha
 
 
     def get_cheque_especial(self):
