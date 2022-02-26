@@ -1,10 +1,10 @@
 from model.conta import Conta
 import random
 from seed.conta import seed as SeedConta, contas_abertas, atualiza_banco_de_dados
-from openpyxl import Workbook, load_workbook
+from openpyxl import load_workbook
 
 
-def criar_banco_de_dados(numero_da_conta, titular, saldo, cheque_especial, limite):
+def criar_banco_de_dados(numero_da_conta, titular, saldo, cheque_especial_disponivel, max_cheque_especial):
     #carrega planilha
     workbook = load_workbook('contas.xlsx')
 
@@ -12,7 +12,7 @@ def criar_banco_de_dados(numero_da_conta, titular, saldo, cheque_especial, limit
     ws1 = workbook.active
 
     #pega dados para salvar
-    salvar_conta = [numero_da_conta, titular, saldo, cheque_especial]
+    salvar_conta = [numero_da_conta, titular, saldo, cheque_especial_disponivel, max_cheque_especial]
 
     #adiciona dados na planilha
     ws1.append(salvar_conta)
@@ -56,21 +56,21 @@ def criar_conta():
     nome = input("Digite seu nome: ").strip().upper()
     numero = len(SeedConta) + 1
     valor_depositado = deseja_depositar()
-    cheque_especial = valor_depositado + random.randrange(0, 300)
-    limite = valor_depositado + cheque_especial
-    conta = Conta(numero, nome, valor_depositado, cheque_especial, limite)
+    max_cheque_especial = valor_depositado + random.randrange(0, 300)
+    cheque_especial_disponivel = max_cheque_especial
+    conta = Conta(numero, nome, valor_depositado, cheque_especial_disponivel, max_cheque_especial)
     SeedConta.append(conta)
-    criar_banco_de_dados(numero, nome, valor_depositado, cheque_especial, limite)
+    criar_banco_de_dados(numero, nome, valor_depositado, cheque_especial_disponivel, max_cheque_especial)
     print("\n" * 100)
-    print("Conta {} criada. \nTitular: {} - Saldo: R$ {} - Limite liberado: R$ {}".format(conta.get_numero_da_conta(), conta.get_titular(), conta.get_saldo(), conta.get_limite()))
+    print("Conta {} criada. \nTitular: {} - Saldo: R$ {} - Cheque especial liberado: R$ {}".format(conta.get_numero_da_conta(), conta.get_titular(), conta.get_saldo(), conta.get_max_cheque_especial()))
     mostra_cartao(conta)
     input("Aperte qualquer tecla para continuar...")
     main()
 
 def exibir_usuario_saldo(usuario_conectado):
-    print("{}".format(usuario_conectado.get_titular()))
-    print("Saldo: {}".format(usuario_conectado.get_saldo()))
-    print("Limite: {}".format(usuario_conectado.get_limite()))
+    print("Bem vindo, {}".format(usuario_conectado.get_titular()))
+    print("Saldo: R$ {}".format(usuario_conectado.get_saldo()))
+    print("Saldo + Cheque Especial: RS {}\n".format(usuario_conectado.get_limite()))
 
 def exibe_menu_da_conta(usuario_conectado):
     print("\n" * 100)
@@ -85,8 +85,8 @@ def exibe_menu_da_conta(usuario_conectado):
             valor = float(input("Quanto deseja depositar?").replace(",", "."))
             usuario_conectado.depositar(valor)
             atualiza_banco_de_dados(usuario_conectado.get_numero_da_conta(), usuario_conectado.get_saldo(),
-                                    usuario_conectado.get_cheque_especial(), usuario_conectado.get_limite())
-            print("Saldo: R$ {}".format(usuario_conectado.extrato()))
+                                    usuario_conectado.get_cheque_especial())
+            print("Saldo atualizado: R$ {}".format(usuario_conectado.extrato()))
             print("Deseja fazer um novo deposito?")
             repetir = int(input("(1) Sim (2) Não"))
             if repetir == 2:
@@ -99,8 +99,8 @@ def exibe_menu_da_conta(usuario_conectado):
             valor = float(input("Quanto deseja sacar?").replace(",", "."))
             usuario_conectado.sacar(valor)
             atualiza_banco_de_dados(usuario_conectado.get_numero_da_conta(), usuario_conectado.get_saldo(),
-                                    usuario_conectado.get_cheque_especial(), usuario_conectado.get_limite())
-            print("Saldo: R$ {}".format(usuario_conectado.extrato()))
+                                    usuario_conectado.get_cheque_especial())
+            print("Saldo atualizado: R$ {}".format(usuario_conectado.extrato()))
             print("Deseja fazer um novo saque?")
             repetir = int(input("(1) Sim (2) Não"))
             if repetir == 2:
@@ -113,8 +113,8 @@ def exibe_menu_da_conta(usuario_conectado):
             destino = int(input("Numero da conta destino: ")) - 1
             usuario_conectado.tranferencia(valor, SeedConta[destino])
             atualiza_banco_de_dados(usuario_conectado.get_numero_da_conta(), usuario_conectado.get_saldo(),
-                                    usuario_conectado.get_cheque_especial(), usuario_conectado.get_limite())
-            print("Saldo: R$ {}".format(usuario_conectado.extrato()))
+                                    usuario_conectado.get_cheque_especial())
+            print("Saldo atualizado: R$ {}".format(usuario_conectado.extrato()))
             print("Deseja fazer uma nova transferencia?")
             repetir = int(input("(1) Sim (2) Não"))
             if repetir == 2:
@@ -122,12 +122,15 @@ def exibe_menu_da_conta(usuario_conectado):
                 exibe_menu_da_conta(usuario_conectado)
 
     elif navega_menu_conta == 4:
+        atualiza_banco_de_dados(usuario_conectado.get_numero_da_conta(), usuario_conectado.get_saldo(),
+                                usuario_conectado.get_cheque_especial())
         print("\n" * 100)
         main()
     else:
         input("Digite um valor válido!")
 
 def main():
+
     print("\n" * 100)
     logo_inicial()
     exibe_menu_inicial()
@@ -163,4 +166,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    loop = 0
+    while loop == 0:
+        main()

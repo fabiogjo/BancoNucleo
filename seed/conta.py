@@ -8,8 +8,8 @@ def carrega_banco_de_dados():
     ws1 = workbook.active
 
     seed = []
-    for numero_da_conta, titular, saldo, cheque_especial, limite in ws1.iter_rows(min_row=1, max_col=5, values_only=True):
-        seed.append(Conta(numero_da_conta, titular, saldo, cheque_especial, limite))
+    for numero_da_conta, titular, saldo, cheque_especial, max_cheque_especial in ws1.iter_rows(min_row=1, max_col=5, values_only=True):
+        seed.append(Conta(numero_da_conta, titular, saldo, cheque_especial, max_cheque_especial))
     return seed
 
 
@@ -18,7 +18,7 @@ def carrega_banco_de_dados():
 seed = carrega_banco_de_dados()
 
 
-def atualiza_banco_de_dados(numero_da_conta, saldo, cheque_especial, limite):
+def atualiza_banco_de_dados(numero_da_conta, saldo, cheque_especial):
     workbook = load_workbook('contas.xlsx')
 
     # seleciona pagina da planilha
@@ -28,18 +28,10 @@ def atualiza_banco_de_dados(numero_da_conta, saldo, cheque_especial, limite):
 
     ws1.cell(row=numero_da_conta, column=4, value=cheque_especial)
 
-    ws1.cell(row=numero_da_conta, column=5, value=limite)
-
     workbook.save('contas.xlsx')
 
     workbook.close()
 
-
-
-
-    #Conta(1, "Fabio", 100, 1000),
-
-    #Conta(2, "Biel", 100, 1000)
 
 
 def contas_abertas():
